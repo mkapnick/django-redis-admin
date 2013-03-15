@@ -30,26 +30,28 @@ class RedisAdmin(admin.ModelAdmin):
             request.POST.get('action') == 'delete_selected' and \
             request.POST.get('post') == 'yes':
 
-            if cache._client.delete(*request.POST.getlist('_selected_action')):
-                messages.add_message(request, messages.SUCCESS, 
+            print "trying to delete:", request.POST.getlist('_selected_action')
+            cache.delete_many(request.POST.getlist('_selected_action'))
+            if not len(cache.get_many(request.POST.getlist('_selected_action'))):
+                messages.add_message(request, messages.SUCCESS,
                                     'Successfully deleted %d keys.' %
                                     len(request.POST.getlist('_selected_action')))
             else:
-                messages.add_message(request, messages.ERROR, 
+                messages.add_message(request, messages.ERROR,
                                     'Could not delete %d keys.' %
                                     len(request.POST.getlist('_selected_action')))
 
         elif request.method == 'POST' and request.POST.getlist('_selected_action') and \
             request.POST.get('action') == 'delete_selected':
- 
-            return render_to_response('redis_admin/delete_selected_confirmation.html', 
+
+            return render_to_response('redis_admin/delete_selected_confirmation.html',
                                      {'keys': request.POST.getlist('_selected_action')},
                                      context_instance=RequestContext(request))
 
         if request.GET.get('q'):
-            keys_result = cache._client.keys('*%s*' % request.GET.get('q'))
+            keys_result = cache.keys('*%s*' % request.GET.get('q'))
         else:
-            keys_result = cache._client.keys('*')
+            keys_result = cache.keys('*')
 
         paginator = Paginator(keys_result, 100)
 
@@ -62,7 +64,7 @@ class RedisAdmin(admin.ModelAdmin):
         except EmptyPage:
             keys = paginator.page(paginator.num_pages)
 
-        return render_to_response('redis_admin/index.html', {'keys': keys, 
+        return render_to_response('redis_admin/index.html', {'keys': keys,
                                   'count': paginator.count, 'page_range': paginator.page_range},
                                    context_instance=RequestContext(request))
 
@@ -81,7 +83,7 @@ class RedisAdmin(admin.ModelAdmin):
         elif key_type == 'set':
             context['value'] = str(cache._client.smembers(key))
 
-        return render_to_response('redis_admin/key.html', context, 
+        return render_to_response('redis_admin/key.html', context,
                                    context_instance=RequestContext(request))
 
     @method_decorator(user_passes_test(lambda u: u.is_superuser))
@@ -92,7 +94,7 @@ class RedisAdmin(admin.ModelAdmin):
             else:
                 messages.add_message(request, messages.ERROR, 'The key "%s" was not deleted successfully.' % key)
             return HttpResponseRedirect('%sredis/manage/' % reverse('admin:index'))
-        return render_to_response('redis_admin/delete_confirmation.html', 
+        return render_to_response('redis_admin/delete_confirmation.html',
                                  {'key': key}, context_instance=RequestContext(request))
 
 class Meta:

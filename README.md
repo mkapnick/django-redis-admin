@@ -1,24 +1,29 @@
-django-simple-redis-admin
+django-redis-admin
 =========
 
-`django-simple-redis-admin` is an addition to your Django admin panel that allows you to view and delete your Redis keys.
+`django-redis-admin` is an addition to your Django admin panel that allows you to view and delete your Redis keys.
 
 Requirements
 ------------
 * Django >= 1.4
 * redis.py
-* a Django redis cache backend. I recommend [django-redis-cache](https://github.com/sebleier/django-redis-cache)
+* a Django redis cache backend. I recommend [django-redis](https://github.com/sebleier/django-redis-cache)
 
 Installation
 ------------
-    pip install django-simple-redis-admin
+    # pip install django-redis-admin
     Add redis_admin to your INSTALLED_APPS
-    
-Why simple?
------------
+
+About
+-----
 
 This package does not use models, so no database tables need to be created. Just add to INSTALLED_APPS and go.
 Users must have is_superuser == True to view the Redis admin. No django admin logs are created with this package.
+
+Fixed
+-----
+
+Delete multiple keys was broken in django-simple-redis-admin
 
 To Do
 -----

@@ -1,13 +1,15 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='django-simple-redis-admin',
-    version='1.0.2',
+    name='django-redis-admin',
+    version='1.1.0',
     description='A django admin application to manage redis cache keys.',
     long_description=open('README.md').read(),
-    author='Nicholas Serra',
-    author_email='nick@528hazelwood.com',
-    url='https://github.com/nicholasserra/django-simple-redis-admin',
+    author='Stefano Crosta',
+    author_email='stefano@digitalemagine.com',
+    original_author='Nicholas Serra',
+    original_author_email='nick@528hazelwood.com',
+    url='https://github.com/digitalemagine/django-redis-admin',
     packages=find_packages(exclude=[]),
     include_package_data=True,
     classifiers=[
