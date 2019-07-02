@@ -48,6 +48,13 @@ class RedisAdmin(admin.ModelAdmin):
         else:
             keys_result = cache.master_client.keys('*')
 
+
+        # append geo stuff to `keys_result` so we can see it in the admin view
+        geo_keys = cache.master_client.georadius(name="geo", longitude=0, latitude=0, radius=22000, unit="km", withcoord=False)
+        if len(geo_keys) > 0:
+            # copy elements of `geo_keys` into `keys_result`
+            keys_result.append(*geo_keys)
+
         paginator = Paginator(keys_result, 100)
 
         page = request.GET.get('p')
@@ -59,7 +66,7 @@ class RedisAdmin(admin.ModelAdmin):
         except EmptyPage:
             keys = paginator.page(paginator.num_pages)
 
-        return render(request, 'redis_admin/index.html', {'keys': keys, 
+        return render(request, 'redis_admin/index.html', {'keys': keys,
                      'count': paginator.count, 'page_range': paginator.page_range})
 
     @method_decorator(user_passes_test(lambda u: u.is_superuser))
