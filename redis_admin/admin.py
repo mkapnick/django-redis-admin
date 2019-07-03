@@ -50,10 +50,10 @@ class RedisAdmin(admin.ModelAdmin):
 
 
         # append geo stuff to `keys_result` so we can see it in the admin view
-        geo_keys = cache.master_client.georadius(name="geo", longitude=0, latitude=0, radius=22000, unit="km", withcoord=False)
+        geo_keys = cache.master_client.georadius(name="geo", longitude=0, latitude=0, radius=22000, unit="km", withcoord=True)
         if len(geo_keys) > 0:
             # copy elements of `geo_keys` into `keys_result`
-            keys_result.append(*geo_keys)
+            keys_result = keys_result + geo_keys
 
         paginator = Paginator(keys_result, 100)
 
